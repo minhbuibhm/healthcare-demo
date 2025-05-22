@@ -821,6 +821,24 @@
                 <h1>Healthcare Intelligence Platform</h1>
                 <div class="header-subtitle">AI-Powered Regulatory & Business Intelligence for ASEAN Healthcare</div>
             </div>
+        </div>
+        <div class="header-metrics">
+            <div class="metric-item">
+                <span class="metric-value">247</span>
+                <span class="metric-label">Sources Monitored</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-value">94%</span>
+                <span class="metric-label">Automation Rate</span>
+            </div>
+            <div class="roi-badge">
+                💰 $2.3M ROI Generated
+            </div>
+            <button class="config-toggle" onclick="toggleConfigPanel()">
+                ⚙️ Configure Platform
+            </button>
+        </div>
+    </div>
 
     <!-- Configuration Panel -->
     <div class="config-overlay" onclick="closeConfigPanel()"></div>
@@ -832,9 +850,9 @@
 
         <div class="config-content">
             <div class="config-tabs">
-                <button class="config-tab active" onclick="switchConfigTab('regulatory')">📋 Regulatory</button>
-                <button class="config-tab" onclick="switchConfigTab('news')">📰 News</button>
-                <button class="config-tab" onclick="switchConfigTab('rfp')">🎯 RFP</button>
+                <button class="config-tab active" onclick="switchConfigTab(event, 'regulatory')">📋 Regulatory</button>
+                <button class="config-tab" onclick="switchConfigTab(event, 'news')">📰 News</button>
+                <button class="config-tab" onclick="switchConfigTab(event, 'rfp')">🎯 RFP</button>
             </div>
 
             <!-- Regulatory Configuration -->
@@ -847,33 +865,33 @@
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🇹🇭 Thailand Ministry of Public Health</div>
-                                    <div class="source-url">moph.go.th/regulatory</div>
+                                    <div class="source-url">www.moph.go.th</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🇻🇳 Vietnam MOH Portal</div>
-                                    <div class="source-url">moh.gov.vn/regulations</div>
+                                    <div class="source-url">www.moh.gov.vn</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🇸🇬 Singapore MOH Guidelines</div>
-                                    <div class="source-url">moh.gov.sg/policies</div>
+                                    <div class="source-url">www.moh.gov.sg</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🇵🇭 Philippines DOH</div>
-                                    <div class="source-url">doh.gov.ph/regulations</div>
+                                    <div class="source-url">www.doh.gov.ph</div>
                                 </div>
                                 <span class="source-status inactive">Inactive</span>
                             </div>
                         </div>
-                        <button class="add-source-btn">+ Add New Source</button>
+                        <button class="add-source-btn" onclick="addNewSource(event)">+ Add New Source</button>
                     </div>
                 </div>
 
@@ -881,7 +899,7 @@
                     <h4>🤖 AI Classification Settings</h4>
                     <div class="config-item">
                         <label>Relevance Threshold (%)</label>
-                        <input type="range" class="config-input" min="60" max="95" value="85" oninput="updateThreshold(this.value)">
+                        <input type="range" class="config-input" min="60" max="95" value="85" oninput="updateThreshold(event, this.value)">
                         <small>Current: 85% - Higher values = more selective filtering</small>
                     </div>
                     <div class="config-item">
@@ -917,26 +935,26 @@
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🇸🇬 The Straits Times Health</div>
-                                    <div class="source-url">straitstimes.com/singapore/health</div>
+                                    <div class="source-url">www.straitstimes.com/singapore/health</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🇮🇩 Jakarta Post Health</div>
-                                    <div class="source-url">thejakartapost.com/life/health</div>
+                                    <div class="source-url">www.thejakartapost.com/life/health</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🌍 WHO Regional Office</div>
-                                    <div class="source-url">who.int/southeastasia</div>
+                                    <div class="source-url">www.who.int/southeastasia</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                         </div>
-                        <button class="add-source-btn">+ Add News Source</button>
+                        <button class="add-source-btn" onclick="addNewSource(event)">+ Add News Source</button>
                     </div>
                 </div>
 
@@ -968,7 +986,7 @@
                     <h4>🎯 Content Filtering</h4>
                     <div class="config-item">
                         <label>Minimum Relevance Score</label>
-                        <input type="range" class="config-input" min="70" max="95" value="82">
+                        <input type="range" class="config-input" min="70" max="95" value="82" oninput="updateThreshold(event, this.value)">
                         <small>Current: 82% - Stories below this score are excluded</small>
                     </div>
                     <div class="config-item">
@@ -988,33 +1006,33 @@
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🏛️ USAID Grants Portal</div>
-                                    <div class="source-url">grants.gov/usaid</div>
+                                    <div class="source-url">www.grants.gov</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🏦 Asian Development Bank</div>
-                                    <div class="source-url">adb.org/business/opportunities</div>
+                                    <div class="source-url">www.adb.org/work-with-us/business-opportunities</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🌍 WHO Funding Opportunities</div>
-                                    <div class="source-url">who.int/about/procurement</div>
+                                    <div class="source-url">www.who.int/about/accountability/procurement</div>
                                 </div>
                                 <span class="source-status active">Active</span>
                             </div>
                             <div class="source-item">
                                 <div class="source-info">
                                     <div>🇪🇺 EU-ASEAN Grants</div>
-                                    <div class="source-url">ec.europa.eu/international</div>
+                                    <div class="source-url">ec.europa.eu/international-partnerships</div>
                                 </div>
                                 <span class="source-status inactive">Inactive</span>
                             </div>
                         </div>
-                        <button class="add-source-btn">+ Add Funding Portal</button>
+                        <button class="add-source-btn" onclick="addNewSource(event)">+ Add Funding Portal</button>
                     </div>
                 </div>
 
@@ -1062,26 +1080,8 @@
         </div>
 
         <div class="config-actions">
-            <button class="config-save" onclick="saveConfiguration()">💾 Save Configuration</button>
-            <button class="config-reset" onclick="resetConfiguration()">🔄 Reset to Default</button>
-        </div>
-    </div>
-        </div>
-        <div class="header-metrics">
-            <div class="metric-item">
-                <span class="metric-value">247</span>
-                <span class="metric-label">Sources Monitored</span>
-            </div>
-            <div class="metric-item">
-                <span class="metric-value">94%</span>
-                <span class="metric-label">Automation Rate</span>
-            </div>
-            <div class="roi-badge">
-                💰 $2.3M ROI Generated
-            </div>
-            <button class="config-toggle" onclick="toggleConfigPanel()">
-                ⚙️ Configure Platform
-            </button>
+            <button class="config-save" onclick="saveConfiguration(event)">💾 Save Configuration</button>
+            <button class="config-reset" onclick="resetConfiguration(event)">🔄 Reset to Default</button>
         </div>
     </div>
 
@@ -1192,8 +1192,8 @@
                     <strong>Critical:</strong> Thailand's new import regulations require immediate $75K compliance investment but unlock $1.2M market access. <strong>Opportunity:</strong> Vietnam's digital health strategy creates $2.3B addressable market for AI diagnostics and telemedicine solutions.
                 </div>
                 <div class="action-buttons">
-                    <button class="btn">📋 Full Executive Brief</button>
-                    <button class="btn btn-export">📧 Email Leadership Team</button>
+                    <button class="btn" onclick="showDemoModal('📋 Full Executive Brief')">📋 Full Executive Brief</button>
+                    <button class="btn btn-export" onclick="showDemoModal('📧 Email Leadership Team')">📧 Email Leadership Team</button>
                 </div>
             </div>
 
@@ -1270,9 +1270,9 @@
                     <strong>This Week's Digest:</strong> 8 stories curated from 1,247 sources. Lead story: Singapore's massive AI investment signals regional leadership shift. <strong>Trend:</strong> 3 ASEAN countries announced major telemedicine expansions.
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-success">📧 Generate Newsletter</button>
-                    <button class="btn btn-export">📄 Export PDF</button>
-                    <button class="btn btn-secondary">⚙️ Customize Content</button>
+                    <button class="btn btn-success" onclick="showDemoModal('📧 Generate Newsletter')">📧 Generate Newsletter</button>
+                    <button class="btn btn-export" onclick="showDemoModal('📄 Export PDF')">📄 Export PDF</button>
+                    <button class="btn btn-secondary" onclick="showDemoModal('⚙️ Customize Content')">⚙️ Customize Content</button>
                 </div>
             </div>
 
@@ -1363,9 +1363,9 @@
                     <strong>Pipeline Value:</strong> $6.25M in active opportunities identified this week. <strong>Win Rate:</strong> 340% increase in successful applications. <strong>Priority Action:</strong> ADB deadline requires immediate proposal preparation.
                 </div>
                 <div class="action-buttons">
-                    <button class="btn btn-urgent">🚨 Send Deadline Alerts</button>
-                    <button class="btn btn-success">📊 Export to CRM</button>
-                    <button class="btn btn-secondary">📅 Calendar Integration</button>
+                    <button class="btn btn-urgent" onclick="showDemoModal('🚨 Send Deadline Alerts')">🚨 Send Deadline Alerts</button>
+                    <button class="btn btn-success" onclick="showDemoModal('📊 Export to CRM')">📊 Export to CRM</button>
+                    <button class="btn btn-secondary" onclick="showDemoModal('📅 Calendar Integration')">📅 Calendar Integration</button>
                 </div>
             </div>
 
@@ -1385,20 +1385,6 @@
             // Animate KPI values on load
             animateKPIs();
             
-            // Add click handlers for demonstration
-            document.querySelectorAll('.btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    showDemoModal(this.textContent.trim());
-                });
-            });
-
-            // Add hover effects for data items
-            document.querySelectorAll('.data-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    showDetailModal(this.querySelector('.item-title').textContent);
-                });
-            });
-
             // Simulate real-time updates
             setInterval(updateLiveMetrics, 5000);
         });
@@ -1426,7 +1412,8 @@
             document.body.style.overflow = 'auto';
         }
 
-        function switchConfigTab(tabName) {
+        // Fixed tab switching function with proper event handling
+        function switchConfigTab(event, tabName) {
             // Remove active from all tabs and sections
             document.querySelectorAll('.config-tab').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.config-section').forEach(section => section.classList.remove('active'));
@@ -1436,12 +1423,16 @@
             document.getElementById(tabName + '-config').classList.add('active');
         }
 
-        function updateThreshold(value) {
+        // Fixed threshold update function with proper event handling
+        function updateThreshold(event, value) {
             const small = event.target.nextElementSibling;
-            small.textContent = `Current: ${value}% - Higher values = more selective filtering`;
+            if (small && small.tagName === 'SMALL') {
+                small.textContent = `Current: ${value}% - Higher values = more selective filtering`;
+            }
         }
 
-        function saveConfiguration() {
+        // Fixed save configuration function with proper event handling
+        function saveConfiguration(event) {
             // Simulate saving configuration
             const button = event.target;
             const originalText = button.textContent;
@@ -1456,13 +1447,15 @@
             }, 1500);
         }
 
-        function resetConfiguration() {
+        // Fixed reset configuration function with proper event handling
+        function resetConfiguration(event) {
             if (confirm('Are you sure you want to reset all configuration to default values?')) {
                 showDemoModal('Configuration reset to default values. All monitoring sources and AI settings have been restored to recommended defaults.');
             }
         }
 
-        function addNewSource() {
+        // Fixed add new source function with proper event handling
+        function addNewSource(event) {
             const sourceType = event.target.textContent.includes('News') ? 'news source' : 
                               event.target.textContent.includes('Funding') ? 'funding portal' : 
                               'regulatory source';
@@ -1478,16 +1471,6 @@ In the full platform, you would:
 
 New sources typically become active within 15 minutes and begin generating insights immediately.`);
         }
-
-        // Add event listeners for Add Source buttons
-        document.addEventListener('DOMContentLoaded', function() {
-            // ... existing code ...
-            
-            // Add source button handlers
-            document.querySelectorAll('.add-source-btn').forEach(button => {
-                button.addEventListener('click', addNewSource);
-            });
-        });
 
         function animateKPIs() {
             const kpiValues = document.querySelectorAll('.kpi-value');
@@ -1522,7 +1505,10 @@ New sources typically become active within 15 minutes and begin generating insig
                 '📧 Email Leadership Team': 'Automated email with executive summary would be sent to leadership team with priority recommendations.',
                 '📧 Generate Newsletter': 'AI-curated newsletter with top healthcare stories would be generated for distribution.',
                 '🚨 Send Deadline Alerts': 'Urgent notifications would be sent to business development team about approaching RFP deadlines.',
-                '📊 Export to CRM': 'RFP data would be automatically exported to your CRM system with lead scoring and next actions.'
+                '📊 Export to CRM': 'RFP data would be automatically exported to your CRM system with lead scoring and next actions.',
+                '📄 Export PDF': 'Newsletter content would be formatted and exported as a professional PDF document.',
+                '⚙️ Customize Content': 'Content customization panel would open to adjust newsletter sections and topics.',
+                '📅 Calendar Integration': 'RFP deadlines would be automatically synced to team calendars with alerts.'
             };
             
             const message = messages[action] || `${action} functionality would be executed automatically.`;
@@ -1532,21 +1518,35 @@ New sources typically become active within 15 minutes and begin generating insig
             modal.style.cssText = `
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
                 background: rgba(0,0,0,0.7); display: flex; align-items: center; 
-                justify-content: center; z-index: 1000;
+                justify-content: center; z-index: 1001; animation: fadeIn 0.3s ease;
             `;
             
             modal.innerHTML = `
-                <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; margin: 1rem;">
-                    <h3 style="margin-bottom: 1rem; color: #667eea;">${action}</h3>
-                    <p style="margin-bottom: 1.5rem; line-height: 1.6;">${message}</p>
+                <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; margin: 1rem; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: slideUp 0.3s ease;">
+                    <h3 style="margin-bottom: 1rem; color: #667eea; font-size: 1.2rem;">${action}</h3>
+                    <p style="margin-bottom: 1.5rem; line-height: 1.6; color: #2d3436;">${message}</p>
                     <button onclick="this.closest('div').remove()" 
-                            style="background: #667eea; color: white; border: none; padding: 0.5rem 1rem; 
-                                   border-radius: 6px; cursor: pointer;">Close</button>
+                            style="background: #667eea; color: white; border: none; padding: 0.75rem 1.5rem; 
+                                   border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.2s ease;">Close</button>
                 </div>
             `;
             
+            // Add CSS animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            `;
+            document.head.appendChild(style);
+            
             document.body.appendChild(modal);
-            setTimeout(() => modal.remove(), 5000);
+            
+            // Auto-close after 5 seconds
+            setTimeout(() => {
+                if (modal.parentNode) {
+                    modal.remove();
+                }
+            }, 5000);
         }
 
         function showDetailModal(title) {
@@ -1570,6 +1570,18 @@ New sources typically become active within 15 minutes and begin generating insig
             // This would update with real data in production
             console.log(`Live update at ${timeString}`);
         }
+
+        // Add click handlers for data items
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.data-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const titleElement = this.querySelector('.item-title');
+                    if (titleElement) {
+                        showDetailModal(titleElement.textContent);
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
