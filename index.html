@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Intelligence Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .header-metrics {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .metric-item {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .metric-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .roi-badge {
+            background: linear-gradient(135deg, #00d4aa 0%, #00a085 100%);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .config-panel {
+            position: fixed;
+            top: 0;
+            right: -500px;
+            width: 500px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: -8px 0 32px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .config-panel.open {
+            right: 0;
+        }
+
+        .config-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(2px);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .config-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .config-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .config-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .config-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+        }
+
+        .config-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .config-content {
+            padding: 1.5rem;
+        }
+
+        .config-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 0.25rem;
+        }
+
+        .config-tab {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            text-align: center;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .config-tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .config-section {
+            display: none;
+        }
+
+        .config-section.active {
+            display: block;
+        }
+
+        .config-group {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .config-group h4 {
+            color: #2d3436;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-item {
+            margin-bottom: 1rem;
+        }
+
+        .config-item label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .config-input {
+            width: 100%;
+            padding: 0.6rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .config-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+
+        .config-textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .source-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background: white;
+        }
+
+        .source-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .source-item:last-child {
+            border-bottom: none;
+        }
+
+        .source-info {
+            flex: 1;
+        }
+
+        .source-url {
+            font-size: 0.8rem;
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+
+        .source-status {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .source-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .source-status.inactive {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .add-source-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            transition: background 0.2s ease;
+        }
+
+        .add-source-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .config-actions {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            border-top: 1px solid #eee;
+            background: #f8f9fa;
+        }
+
+        .config-save {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            flex: 1;
+            transition: all 0.2s ease;
+        }
+
+        .config-save:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 184, 148, 0.3);
+        }
+
+        .config-reset {
+            background: #74b9ff;
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .config-reset:hover {
+            background: #0984e3;
+        }
+
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            max-width: 1600px;
+            margin: 0 auto;
+            min-height: calc(100vh - 100px);
+        }
+
+        .kpi-overview {
+            grid-column: 1 / 3;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .kpi-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.15);
+        }
+
+        .kpi-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .kpi-icon.compliance { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .kpi-icon.content { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .kpi-icon.business { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .kpi-icon.roi { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+
+        .kpi-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: #2d3436;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-label {
+            font-size: 0.9rem;
+            color: #636e72;
+            font-weight: 500;
+        }
+
+        .kpi-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .kpi-change.positive {
+            background: rgba(39, 174, 96, 0.1);
+            color: #27ae60;
+        }
+
+        .section-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease;
+        }
+
+        .section-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f2f6;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #2d3436;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .section-icon.regulatory { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .section-icon.news { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .section-icon.rfp { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, #00d4aa 0%, #00a085 100%);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .ai-pulse {
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+
+        .priority-alerts {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            color: white;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .priority-alerts .icon {
+            font-size: 1.2rem;
+        }
+
+        .data-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex: 1;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .data-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            border-left: 4px solid #ddd;
+            transition: all 0.2s ease;
+        }
+
+        .data-item:hover {
+            background: #e9ecef;
+            transform: translateX(2px);
+        }
+
+        .data-item.high-priority {
+            border-left-color: #e74c3c;
+            background: #fdf2f2;
+        }
+
+        .data-item.medium-priority {
+            border-left-color: #f39c12;
+            background: #fefbf3;
+        }
+
+        .data-item.completed {
+            border-left-color: #27ae60;
+            background: #f2fbf6;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: #2d3436;
+            font-size: 0.95rem;
+            flex: 1;
+        }
+
+        .item-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #636e72;
+            margin-top: 0.5rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .status-high { background: #ffeaa7; color: #d63031; }
+        .status-medium { background: #74b9ff; color: #0984e3; }
+        .status-completed { background: #55efc4; color: #00b894; }
+        .status-urgent { background: #fd79a8; color: #e84393; }
+
+        .impact-score {
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .summary-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .summary-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .summary-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+        }
+
+        .btn-export {
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+        }
+
+        .footer-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+            font-size: 0.8rem;
+            color: #636e72;
+        }
+
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00b894;
+            font-weight: 500;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00b894;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .news-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex: 1;
+            max-height: 320px;
+            overflow-y: auto;
+        }
+
+        .news-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            border-left: 4px solid #74b9ff;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .news-card:hover {
+            background: #e9ecef;
+            transform: translateX(2px);
+        }
+
+        .news-card.breaking {
+            border-left-color: #e17055;
+            background: #fef7f0;
+        }
+
+        .breaking-badge {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: #e17055;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .newsletter-ready {
+            background: #55efc4;
+            color: #00b894;
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto auto auto;
+            }
+
+            .kpi-overview {
+                grid-column: 1;
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .header-metrics {
+                display: none;
+            }
+
+            .config-panel {
+                width: 100%;
+                right: -100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .kpi-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .config-panel {
+                width: 100%;
+                right: -100%;
+            }
+
+            .config-tabs {
+                flex-direction: column;
+            }
+
+            .config-tab {
+                margin-bottom: 0.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">🏥</div>
+            <div>
+                <h1>Healthcare Intelligence Platform</h1>
+                <div class="header-subtitle">AI-Powered Regulatory & Business Intelligence for ASEAN Healthcare</div>
+            </div>
+
+    <!-- Configuration Panel -->
+    <div class="config-overlay" onclick="closeConfigPanel()"></div>
+    <div class="config-panel" id="configPanel">
+        <div class="config-header">
+            <div class="config-title">⚙️ Platform Configuration</div>
+            <button class="config-close" onclick="closeConfigPanel()">×</button>
+        </div>
+
+        <div class="config-content">
+            <div class="config-tabs">
+                <button class="config-tab active" onclick="switchConfigTab('regulatory')">📋 Regulatory</button>
+                <button class="config-tab" onclick="switchConfigTab('news')">📰 News</button>
+                <button class="config-tab" onclick="switchConfigTab('rfp')">🎯 RFP</button>
+            </div>
+
+            <!-- Regulatory Configuration -->
+            <div class="config-section active" id="regulatory-config">
+                <div class="config-group">
+                    <h4>📊 Data Sources</h4>
+                    <div class="config-item">
+                        <label>Monitored Regulatory Portals</label>
+                        <div class="source-list">
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🇹🇭 Thailand Ministry of Public Health</div>
+                                    <div class="source-url">moph.go.th/regulatory</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🇻🇳 Vietnam MOH Portal</div>
+                                    <div class="source-url">moh.gov.vn/regulations</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🇸🇬 Singapore MOH Guidelines</div>
+                                    <div class="source-url">moh.gov.sg/policies</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🇵🇭 Philippines DOH</div>
+                                    <div class="source-url">doh.gov.ph/regulations</div>
+                                </div>
+                                <span class="source-status inactive">Inactive</span>
+                            </div>
+                        </div>
+                        <button class="add-source-btn">+ Add New Source</button>
+                    </div>
+                </div>
+
+                <div class="config-group">
+                    <h4>🤖 AI Classification Settings</h4>
+                    <div class="config-item">
+                        <label>Relevance Threshold (%)</label>
+                        <input type="range" class="config-input" min="60" max="95" value="85" oninput="updateThreshold(this.value)">
+                        <small>Current: 85% - Higher values = more selective filtering</small>
+                    </div>
+                    <div class="config-item">
+                        <label>Priority Detection Keywords</label>
+                        <textarea class="config-input config-textarea" placeholder="new, updated, revised, amendment, effective immediately, compliance required, deadline">new, updated, revised, amendment, effective immediately, compliance required, deadline</textarea>
+                    </div>
+                </div>
+
+                <div class="config-group">
+                    <h4>📧 Alert Settings</h4>
+                    <div class="config-item">
+                        <label>Executive Alert Recipients</label>
+                        <input type="text" class="config-input" placeholder="ceo@company.health, compliance@company.health" value="ceo@company.health, compliance@company.health">
+                    </div>
+                    <div class="config-item">
+                        <label>Alert Frequency</label>
+                        <select class="config-input">
+                            <option value="immediate">Immediate (High Priority Only)</option>
+                            <option value="daily" selected>Daily Digest</option>
+                            <option value="weekly">Weekly Summary</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Configuration -->
+            <div class="config-section" id="news-config">
+                <div class="config-group">
+                    <h4>📰 News Sources</h4>
+                    <div class="config-item">
+                        <label>Monitored News Outlets</label>
+                        <div class="source-list">
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🇸🇬 The Straits Times Health</div>
+                                    <div class="source-url">straitstimes.com/singapore/health</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🇮🇩 Jakarta Post Health</div>
+                                    <div class="source-url">thejakartapost.com/life/health</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🌍 WHO Regional Office</div>
+                                    <div class="source-url">who.int/southeastasia</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                        </div>
+                        <button class="add-source-btn">+ Add News Source</button>
+                    </div>
+                </div>
+
+                <div class="config-group">
+                    <h4>📧 Newsletter Settings</h4>
+                    <div class="config-item">
+                        <label>Newsletter Template</label>
+                        <select class="config-input">
+                            <option value="executive">Executive Summary Format</option>
+                            <option value="detailed" selected>Detailed Analysis Format</option>
+                            <option value="brief">Brief Updates Format</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Publication Schedule</label>
+                        <select class="config-input">
+                            <option value="weekly">Weekly</option>
+                            <option value="biweekly" selected>Bi-weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div class="config-item">
+                        <label>Distribution List</label>
+                        <textarea class="config-input config-textarea" placeholder="clients@company.health, partners@company.health">clients@company.health, partners@company.health, media@company.health</textarea>
+                    </div>
+                </div>
+
+                <div class="config-group">
+                    <h4>🎯 Content Filtering</h4>
+                    <div class="config-item">
+                        <label>Minimum Relevance Score</label>
+                        <input type="range" class="config-input" min="70" max="95" value="82">
+                        <small>Current: 82% - Stories below this score are excluded</small>
+                    </div>
+                    <div class="config-item">
+                        <label>Focus Topics</label>
+                        <textarea class="config-input config-textarea">Digital Health, AI in Healthcare, Telemedicine, Public Health Policy, Healthcare Investment, Medical Innovation</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RFP Configuration -->
+            <div class="config-section" id="rfp-config">
+                <div class="config-group">
+                    <h4>🎯 Funding Portals</h4>
+                    <div class="config-item">
+                        <label>Monitored RFP Sources</label>
+                        <div class="source-list">
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🏛️ USAID Grants Portal</div>
+                                    <div class="source-url">grants.gov/usaid</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🏦 Asian Development Bank</div>
+                                    <div class="source-url">adb.org/business/opportunities</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🌍 WHO Funding Opportunities</div>
+                                    <div class="source-url">who.int/about/procurement</div>
+                                </div>
+                                <span class="source-status active">Active</span>
+                            </div>
+                            <div class="source-item">
+                                <div class="source-info">
+                                    <div>🇪🇺 EU-ASEAN Grants</div>
+                                    <div class="source-url">ec.europa.eu/international</div>
+                                </div>
+                                <span class="source-status inactive">Inactive</span>
+                            </div>
+                        </div>
+                        <button class="add-source-btn">+ Add Funding Portal</button>
+                    </div>
+                </div>
+
+                <div class="config-group">
+                    <h4>🎯 Matching Criteria</h4>
+                    <div class="config-item">
+                        <label>Company Capability Keywords</label>
+                        <textarea class="config-input config-textarea">healthcare consulting, digital health, AI implementation, health systems strengthening, regulatory compliance, telemedicine, health policy, medical devices</textarea>
+                    </div>
+                    <div class="config-item">
+                        <label>Minimum Funding Amount ($)</label>
+                        <input type="number" class="config-input" placeholder="50000" value="50000">
+                    </div>
+                    <div class="config-item">
+                        <label>Geographic Focus</label>
+                        <select class="config-input">
+                            <option value="asean" selected>ASEAN Region</option>
+                            <option value="asia">Asia Pacific</option>
+                            <option value="global">Global</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="config-group">
+                    <h4>⏰ Alert Management</h4>
+                    <div class="config-item">
+                        <label>Deadline Alert Thresholds</label>
+                        <div style="display: flex; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 0.8rem;">Urgent (days)</label>
+                                <input type="number" class="config-input" value="7" style="margin-top: 0.25rem;">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 0.8rem;">Warning (days)</label>
+                                <input type="number" class="config-input" value="14" style="margin-top: 0.25rem;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="config-item">
+                        <label>Business Development Team Alerts</label>
+                        <input type="text" class="config-input" placeholder="bd@company.health" value="bd@company.health, proposals@company.health">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="config-actions">
+            <button class="config-save" onclick="saveConfiguration()">💾 Save Configuration</button>
+            <button class="config-reset" onclick="resetConfiguration()">🔄 Reset to Default</button>
+        </div>
+    </div>
+        </div>
+        <div class="header-metrics">
+            <div class="metric-item">
+                <span class="metric-value">247</span>
+                <span class="metric-label">Sources Monitored</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-value">94%</span>
+                <span class="metric-label">Automation Rate</span>
+            </div>
+            <div class="roi-badge">
+                💰 $2.3M ROI Generated
+            </div>
+            <button class="config-toggle" onclick="toggleConfigPanel()">
+                ⚙️ Configure Platform
+            </button>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- KPI Overview -->
+        <div class="kpi-overview">
+            <div class="kpi-card">
+                <div class="kpi-icon compliance">📋</div>
+                <div class="kpi-value">87%</div>
+                <div class="kpi-label">Compliance Risk Reduction</div>
+                <div class="kpi-change positive">+15% this quarter</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon content">📰</div>
+                <div class="kpi-value">156hrs</div>
+                <div class="kpi-label">Monthly Time Saved</div>
+                <div class="kpi-change positive">Content automation</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon business">🎯</div>
+                <div class="kpi-value">340%</div>
+                <div class="kpi-label">RFP Response Rate Increase</div>
+                <div class="kpi-change positive">$12.7M pipeline value</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-icon roi">💎</div>
+                <div class="kpi-value">450%</div>
+                <div class="kpi-label">Platform ROI</div>
+                <div class="kpi-change positive">8-month payback</div>
+            </div>
+        </div>
+
+        <!-- Regulatory Intelligence -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon regulatory">📋</div>
+                    Regulatory Intelligence
+                </div>
+                <div class="ai-status">
+                    <div class="ai-pulse"></div>
+                    AI Monitoring Active
+                </div>
+            </div>
+
+            <div class="priority-alerts">
+                <span class="icon">🚨</span>
+                <div>
+                    <strong>3 Critical Updates Detected</strong> - Executive action required for Thailand & Vietnam regulations
+                </div>
+            </div>
+
+            <div class="data-grid">
+                <div class="data-item high-priority">
+                    <div class="item-header">
+                        <div class="item-title">Thailand Medical Device Import Law - Immediate Compliance Required</div>
+                        <span class="status-badge status-urgent">URGENT</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🇹🇭 MoPH Thailand</span>
+                        <span>📅 Effective: Jun 1, 2025</span>
+                        <span class="impact-score">Impact: 95%</span>
+                    </div>
+                </div>
+
+                <div class="data-item high-priority">
+                    <div class="item-header">
+                        <div class="item-title">Vietnam Digital Health Strategy - $2.3B Market Opportunity</div>
+                        <span class="status-badge status-high">HIGH</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🇻🇳 MOH Vietnam</span>
+                        <span>📅 Policy Release: May 18</span>
+                        <span class="impact-score">Impact: 92%</span>
+                    </div>
+                </div>
+
+                <div class="data-item medium-priority">
+                    <div class="item-header">
+                        <div class="item-title">Singapore Telemedicine Guidelines Update</div>
+                        <span class="status-badge status-medium">MEDIUM</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🇸🇬 MOH Singapore</span>
+                        <span>📅 May 15, 2025</span>
+                        <span class="impact-score">Impact: 78%</span>
+                    </div>
+                </div>
+
+                <div class="data-item completed">
+                    <div class="item-header">
+                        <div class="item-title">Philippines Healthcare Facility Standards - Compliance Completed</div>
+                        <span class="status-badge status-completed">RESOLVED</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🇵🇭 DOH Philippines</span>
+                        <span>✅ Action Taken</span>
+                        <span class="impact-score">Impact: 65%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-panel">
+                <div class="summary-title">
+                    ⭐ Executive Intelligence Summary
+                </div>
+                <div class="summary-content">
+                    <strong>Critical:</strong> Thailand's new import regulations require immediate $75K compliance investment but unlock $1.2M market access. <strong>Opportunity:</strong> Vietnam's digital health strategy creates $2.3B addressable market for AI diagnostics and telemedicine solutions.
+                </div>
+                <div class="action-buttons">
+                    <button class="btn">📋 Full Executive Brief</button>
+                    <button class="btn btn-export">📧 Email Leadership Team</button>
+                </div>
+            </div>
+
+            <div class="footer-stats">
+                <div class="live-indicator">
+                    <div class="live-dot"></div>
+                    Live monitoring 89 regulatory sources
+                </div>
+                <div>Last update: 2 minutes ago | 47 items processed today</div>
+            </div>
+        </div>
+
+        <!-- News Intelligence -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon news">📰</div>
+                    News Intelligence
+                </div>
+                <div class="ai-status">
+                    <div class="ai-pulse"></div>
+                    AI Curated
+                </div>
+            </div>
+
+            <div class="news-cards">
+                <div class="news-card breaking">
+                    <div class="breaking-badge">BREAKING</div>
+                    <div class="item-title">Singapore launches $500M AI Health Innovation Fund</div>
+                    <div class="item-meta">
+                        <span>🇸🇬 Singapore</span>
+                        <span>💰 Investment</span>
+                        <span>📊 94% relevance</span>
+                        <span class="newsletter-ready">Newsletter Ready</span>
+                    </div>
+                </div>
+
+                <div class="news-card">
+                    <div class="item-title">WHO approves new malaria prevention strategy for ASEAN</div>
+                    <div class="item-meta">
+                        <span>🌏 ASEAN</span>
+                        <span>🦠 Public Health</span>
+                        <span>📊 91% relevance</span>
+                        <span class="newsletter-ready">Newsletter Ready</span>
+                    </div>
+                </div>
+
+                <div class="news-card">
+                    <div class="item-title">Indonesia's telemedicine adoption reaches 70% of hospitals</div>
+                    <div class="item-meta">
+                        <span>🇮🇩 Indonesia</span>
+                        <span>💡 Innovation</span>
+                        <span>📊 85% relevance</span>
+                        <span class="status-badge status-medium">Under Review</span>
+                    </div>
+                </div>
+
+                <div class="news-card">
+                    <div class="item-title">Philippines mental health budget increases 200%</div>
+                    <div class="item-meta">
+                        <span>🇵🇭 Philippines</span>
+                        <span>🏛️ Policy</span>
+                        <span>📊 82% relevance</span>
+                        <span class="newsletter-ready">Newsletter Ready</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-panel">
+                <div class="summary-title">
+                    📧 Newsletter Intelligence
+                </div>
+                <div class="summary-content">
+                    <strong>This Week's Digest:</strong> 8 stories curated from 1,247 sources. Lead story: Singapore's massive AI investment signals regional leadership shift. <strong>Trend:</strong> 3 ASEAN countries announced major telemedicine expansions.
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-success">📧 Generate Newsletter</button>
+                    <button class="btn btn-export">📄 Export PDF</button>
+                    <button class="btn btn-secondary">⚙️ Customize Content</button>
+                </div>
+            </div>
+
+            <div class="footer-stats">
+                <div class="live-indicator">
+                    <div class="live-dot"></div>
+                    Scanning 247 news sources
+                </div>
+                <div>156 hours saved monthly | 94% automation rate</div>
+            </div>
+        </div>
+
+        <!-- Business Development Intelligence -->
+        <div class="section-card">
+            <div class="section-header">
+                <div class="section-title">
+                    <div class="section-icon rfp">🎯</div>
+                    Business Development Intelligence
+                </div>
+                <div class="ai-status">
+                    <div class="ai-pulse"></div>
+                    AI Matched
+                </div>
+            </div>
+
+            <div class="priority-alerts">
+                <span class="icon">⏰</span>
+                <div>
+                    <strong>High-Value Deadline Alert:</strong> $1.8M ADB opportunity closes in 8 days - 92% match score
+                </div>
+            </div>
+
+            <div class="data-grid">
+                <div class="data-item high-priority">
+                    <div class="item-header">
+                        <div class="item-title">USAID ASEAN Digital Health Transformation - $2.5M</div>
+                        <span class="status-badge status-high">95% Match</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🏛️ USAID</span>
+                        <span>⏰ 18 days remaining</span>
+                        <span>🌏 ASEAN Region</span>
+                    </div>
+                </div>
+
+                <div class="data-item high-priority">
+                    <div class="item-header">
+                        <div class="item-title">ADB Healthcare Data Interoperability - $1.8M</div>
+                        <span class="status-badge status-urgent">8 DAYS</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🏦 Asian Development Bank</span>
+                        <span>🇻🇳 Vietnam Focus</span>
+                        <span class="impact-score">92% Match</span>
+                    </div>
+                </div>
+
+                <div class="data-item medium-priority">
+                    <div class="item-header">
+                        <div class="item-title">WHO Malaria Elimination Research - $750K</div>
+                        <span class="status-badge status-medium">78% Match</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🌍 WHO</span>
+                        <span>⏰ 45 days remaining</span>
+                        <span>🌏 Mekong Region</span>
+                    </div>
+                </div>
+
+                <div class="data-item completed">
+                    <div class="item-header">
+                        <div class="item-title">EU-ASEAN Rural Health Systems - $1.2M</div>
+                        <span class="status-badge status-completed">Submitted</span>
+                    </div>
+                    <div class="item-meta">
+                        <span>🇪🇺 EU-ASEAN</span>
+                        <span>✅ Proposal Sent</span>
+                        <span>🇹🇭 Thailand</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-panel">
+                <div class="summary-title">
+                    💼 Business Intelligence
+                </div>
+                <div class="summary-content">
+                    <strong>Pipeline Value:</strong> $6.25M in active opportunities identified this week. <strong>Win Rate:</strong> 340% increase in successful applications. <strong>Priority Action:</strong> ADB deadline requires immediate proposal preparation.
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-urgent">🚨 Send Deadline Alerts</button>
+                    <button class="btn btn-success">📊 Export to CRM</button>
+                    <button class="btn btn-secondary">📅 Calendar Integration</button>
+                </div>
+            </div>
+
+            <div class="footer-stats">
+                <div class="live-indicator">
+                    <div class="live-dot"></div>
+                    Monitoring 89 funding portals
+                </div>
+                <div>$12.7M total pipeline value | 340% response rate increase</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced interactivity for proposal demonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate KPI values on load
+            animateKPIs();
+            
+            // Add click handlers for demonstration
+            document.querySelectorAll('.btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    showDemoModal(this.textContent.trim());
+                });
+            });
+
+            // Add hover effects for data items
+            document.querySelectorAll('.data-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    showDetailModal(this.querySelector('.item-title').textContent);
+                });
+            });
+
+            // Simulate real-time updates
+            setInterval(updateLiveMetrics, 5000);
+        });
+
+        // Configuration Panel Functions
+        function toggleConfigPanel() {
+            const panel = document.getElementById('configPanel');
+            const overlay = document.querySelector('.config-overlay');
+            
+            if (panel.classList.contains('open')) {
+                closeConfigPanel();
+            } else {
+                panel.classList.add('open');
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeConfigPanel() {
+            const panel = document.getElementById('configPanel');
+            const overlay = document.querySelector('.config-overlay');
+            
+            panel.classList.remove('open');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function switchConfigTab(tabName) {
+            // Remove active from all tabs and sections
+            document.querySelectorAll('.config-tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.config-section').forEach(section => section.classList.remove('active'));
+            
+            // Add active to clicked tab and corresponding section
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-config').classList.add('active');
+        }
+
+        function updateThreshold(value) {
+            const small = event.target.nextElementSibling;
+            small.textContent = `Current: ${value}% - Higher values = more selective filtering`;
+        }
+
+        function saveConfiguration() {
+            // Simulate saving configuration
+            const button = event.target;
+            const originalText = button.textContent;
+            
+            button.textContent = '✅ Saved Successfully!';
+            button.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
+            
+            setTimeout(() => {
+                button.textContent = originalText;
+                button.style.background = 'linear-gradient(135deg, #00b894 0%, #00cec9 100%)';
+                showDemoModal('Configuration saved successfully! Changes will take effect within 5 minutes. The AI monitoring systems are now updated with your new settings.');
+            }, 1500);
+        }
+
+        function resetConfiguration() {
+            if (confirm('Are you sure you want to reset all configuration to default values?')) {
+                showDemoModal('Configuration reset to default values. All monitoring sources and AI settings have been restored to recommended defaults.');
+            }
+        }
+
+        function addNewSource() {
+            const sourceType = event.target.textContent.includes('News') ? 'news source' : 
+                              event.target.textContent.includes('Funding') ? 'funding portal' : 
+                              'regulatory source';
+            
+            showDemoModal(`Add New ${sourceType.charAt(0).toUpperCase() + sourceType.slice(1)}: 
+                
+In the full platform, you would:
+1. Enter the website URL
+2. Configure scraping parameters
+3. Set monitoring frequency
+4. Test the connection
+5. Activate monitoring
+
+New sources typically become active within 15 minutes and begin generating insights immediately.`);
+        }
+
+        // Add event listeners for Add Source buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // ... existing code ...
+            
+            // Add source button handlers
+            document.querySelectorAll('.add-source-btn').forEach(button => {
+                button.addEventListener('click', addNewSource);
+            });
+        });
+
+        function animateKPIs() {
+            const kpiValues = document.querySelectorAll('.kpi-value');
+            kpiValues.forEach((element, index) => {
+                const finalValue = element.textContent;
+                element.textContent = '0';
+                
+                setTimeout(() => {
+                    animateValue(element, 0, parseFloat(finalValue.replace(/[^\d.]/g, '')), 2000, finalValue.includes('%') ? '%' : finalValue.includes('hrs') ? 'hrs' : '');
+                }, index * 200);
+            });
+        }
+
+        function animateValue(element, start, end, duration, suffix = '') {
+            const startTime = Date.now();
+            const animate = () => {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = Math.floor(start + (end - start) * progress);
+                element.textContent = current + suffix;
+                
+                if (progress < 1) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            animate();
+        }
+
+        function showDemoModal(action) {
+            const messages = {
+                '📋 Full Executive Brief': 'Executive brief would be generated with detailed regulatory analysis, risk assessment, and recommended actions.',
+                '📧 Email Leadership Team': 'Automated email with executive summary would be sent to leadership team with priority recommendations.',
+                '📧 Generate Newsletter': 'AI-curated newsletter with top healthcare stories would be generated for distribution.',
+                '🚨 Send Deadline Alerts': 'Urgent notifications would be sent to business development team about approaching RFP deadlines.',
+                '📊 Export to CRM': 'RFP data would be automatically exported to your CRM system with lead scoring and next actions.'
+            };
+            
+            const message = messages[action] || `${action} functionality would be executed automatically.`;
+            
+            // Create and show modal
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+                background: rgba(0,0,0,0.7); display: flex; align-items: center; 
+                justify-content: center; z-index: 1000;
+            `;
+            
+            modal.innerHTML = `
+                <div style="background: white; padding: 2rem; border-radius: 12px; max-width: 500px; margin: 1rem;">
+                    <h3 style="margin-bottom: 1rem; color: #667eea;">${action}</h3>
+                    <p style="margin-bottom: 1.5rem; line-height: 1.6;">${message}</p>
+                    <button onclick="this.closest('div').remove()" 
+                            style="background: #667eea; color: white; border: none; padding: 0.5rem 1rem; 
+                                   border-radius: 6px; cursor: pointer;">Close</button>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            setTimeout(() => modal.remove(), 5000);
+        }
+
+        function showDetailModal(title) {
+            const details = {
+                'Thailand Medical Device Import Law - Immediate Compliance Required': 'Detailed analysis: New regulations require updated documentation for customs clearance. Estimated compliance cost: $75K. Market access value: $1.2M annually.',
+                'Vietnam Digital Health Strategy - $2.3B Market Opportunity': 'Strategic opportunity: New policy creates favorable environment for AI diagnostics and telemedicine. Total addressable market: $2.3B by 2027.',
+                'USAID ASEAN Digital Health Transformation - $2.5M': 'High-value opportunity: 95% match with Company capabilities. Focus areas: Digital health infrastructure, AI implementation, capacity building.',
+                'ADB Healthcare Data Interoperability - $1.8M': 'Urgent deadline: 8 days remaining. Strong strategic fit: 92% match score. Requires immediate proposal preparation.'
+            };
+            
+            const detail = details[title] || 'Detailed information would be displayed here with full context, analysis, and recommended actions.';
+            showDemoModal(detail);
+        }
+
+        function updateLiveMetrics() {
+            // Simulate live updates
+            const timeElements = document.querySelectorAll('.footer-stats div:last-child');
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            
+            // This would update with real data in production
+            console.log(`Live update at ${timeString}`);
+        }
+    </script>
+</body>
+</html>
